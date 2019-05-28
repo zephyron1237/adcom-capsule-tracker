@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Adventure Communist Free Capsules</title>
+<style type="text/css">
+h3 {
+	margin: 5px;
+}
+
+.section {
+	border-style: solid;
+	margin-bottom: 5px;
+	width: 550px;
+}
+
+.capsule {
+	width: 40px;
+	height: 35px;
+	margin: 5px 5px;
+	background-repeat: no-repeat;
+	background-position: center;
+	display: inline-block;
+}
+.Wood {
+	background-image: url("Wood.png");
+}
+.Stone {
+	background-image: url("Stone.png");
+}
+.Iron {
+	background-image: url("Iron.png");
+}
+.Epic {
+	background-image: url("Epic.png");
+}
+.Supreme {
+	background-image: url("Supreme.png");
+}
+.remove {
+	background-image: url("remove-small.png");
+}
+
+.possible-end {
+	background-color: #a7f45a;
+}
+
+#currentCapsules {
+	min-height: 45px;
+}
+</style>
+</head>
+<body>
+<p>
+<div class="section">
+	<h3>Capsule History:</h3>
+	<strong>Capsule List:</strong>
+	<div id="currentCapsules">&nbsp;</div>
+	<strong>Add Capsule:</strong>
+	<div>
+		<a href="#" onclick="addCapsule('W');"><span class="capsule Wood">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('S');"><span class="capsule Stone">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('I');"><span class="capsule Iron">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('E');"><span class="capsule Epic">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('U');"><span class="capsule Supreme">&nbsp;</span></a>
+		<a href="#" onclick="removeCapsule();"><span class="capsule remove">&nbsp;</span></a>
+	</div>
+</div>
+<div class="section">
+	<h3>Next Capsule:</h3>
+	<p id="results">&nbsp;</p>
+</div>
+<div class="section">
+	<h3>Cycle</h3>
+	<div id="table"></div>
+</div>
+</body>
+<script type="text/javascript">
+const CYCLE = "SWWWWIWWWWSWWWSWWWWSWWWWSWWWWSWWWWSWWWWSWWWWWSWWWWSWWWWSWWWWWWSWWWSWWWIWWWSWWWSWWWSWWWSWWWSWWWSWWWSWWSWWWWSWWWWSWWWSWWWUWWWSWWWIWWWWSWWWWWSWWWSWWWSWWWWSWWWWSWWWSWWWSWWWWSWWWWSWWSWWWSWWWSWWWWWIWWWSWWWWSWWWWSWWWWSWWWWWWSWWWWSWWWWSWWWWSWWWWEWW";
+
+const TWO_CYCLES = CYCLE + CYCLE;
+
+const CAPSULES = [
+{ name: "Wood", symbol: "W" },
+{ name: "Stone", symbol: "S" },
+{ name: "Iron", symbol: "I" },
+{ name: "Epic", symbol: "E" },
+{ name: "Supreme", symbol: "U" }
+];
+
+var SYMBOL_TO_NAME = {};
+for (var capsule of CAPSULES) {
+	SYMBOL_TO_NAME[capsule.symbol] = capsule.name;
+}
+
+var currentInput = ""
+updateAfterInput();
+
+function addCapsule(symbol) {
+	currentInput += symbol;
+	updateAfterInput();
+}
+
+function removeCapsule() {
+	currentInput = currentInput.slice(0, -1);
+	updateAfterInput();
+}
+
+function updateAfterInput() {
+	var table_html = "";
+	for (var symbol of currentInput) {
+		table_html += "<span class='capsule " + SYMBOL_TO_NAME[symbol] + "'>&nbsp;</span>";
+	}
+	document.getElementById("currentCapsules").innerHTML = table_html || "&nbsp;";
+
+	drawCycleTable();
+
+	if (currentInput.length == 0) {
+		document.getElementById("results").innerHTML = "Add capsules above to see possibilities for the next capsule.";
+		return;
+	}
+	
+	foundIndices = findIndicesOfInput();
+
+	symbolCounts = {};
+	for (var capsule of CAPSULES) {
+		symbolCounts[capsule.symbol] = 0;
+	}
+
+	for (var foundIndex of foundIndices) {
+		nextIndex = foundIndex + currentInput.length;
+		if (nextIndex >= CYCLE.length) {
+			nextIndex -= CYCLE.length;
+		}
+		
+		document.getElementById(nextIndex).classList.add("possible-end");
+		symbolCounts[CYCLE[nextIndex]]++;
+	}
+
+	
+	var results_html = "Total possibilities: " + foundIndices.length + "<br />";
+	for (var capsule of CAPSULES) {
+		var count = symbolCounts[capsule.symbol];
+		if (count > 0) {
+			var percent = Math.round(100 * count / foundIndices.length);
+			results_html += "<img src='" + capsule.name + ".png' />: " + count + " (" + percent + "%)<br />";
+		}
+	}
+	document.getElementById("results").innerHTML = results_html || "&nbsp";
+}
+
+function findIndicesOfInput() {
+	var result = [];
+
+	var index = TWO_CYCLES.indexOf(currentInput);
+	while (index != -1 && index < CYCLE.length) {
+		result.push(index);
+		index = TWO_CYCLES.indexOf(currentInput, index + 1);
+	}
+
+	return result;
+}
+
+function drawCycleTable() {
+	var table_html = "";
+	var index = 0;
+
+	for (var row = 0; row < 24; row++) {
+		table_html += "<div>";
+		for (var col = 0; col < 10; col++) {
+			table_html += "<span id='" + index + "' class='capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>&nbsp;</span>";
+			index++;
+		}
+		table_html += "</div>";
+	}
+
+	document.getElementById("table").innerHTML = table_html;
+}
+</script>
+</html>
