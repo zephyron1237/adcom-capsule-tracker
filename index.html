@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="shortcut icon" type="image/png" href="Wood.png">
 <title>Adventure Communist Free Capsules</title>
 <style type="text/css">
 h3 {
@@ -47,6 +48,12 @@ h3 {
 #currentCapsules {
 	min-height: 45px;
 }
+#resultsTable {
+	text-align:center;
+}
+#resultsTable td {
+	padding: 5px;
+}
 </style>
 </head>
 <body>
@@ -92,28 +99,35 @@ for (var capsule of CAPSULES) {
 	SYMBOL_TO_NAME[capsule.symbol] = capsule.name;
 }
 
-var currentInput = ""
+if (localStorage.getItem('currentInput') == null) {
+	localStorage.setItem('currentInput', '');
+}
 updateAfterInput();
 
 function addCapsule(symbol) {
-	currentInput += symbol;
+	localStorage.setItem('currentInput', localStorage.getItem('currentInput') + symbol);
 	updateAfterInput();
 }
 
 function removeCapsule() {
-	currentInput = currentInput.slice(0, -1);
+	localStorage.setItem('currentInput', localStorage.getItem('currentInput').slice(0, -1));
 	updateAfterInput();
 }
 
 function updateAfterInput() {
+	var currentInput = localStorage.getItem('currentInput');
+
+	// Update the "capsule history" list
 	var table_html = "";
 	for (var symbol of currentInput) {
 		table_html += "<span class='capsule " + SYMBOL_TO_NAME[symbol] + "'>&nbsp;</span>";
 	}
 	document.getElementById("currentCapsules").innerHTML = table_html || "&nbsp;";
 
+	// Update the Cycle table
 	drawCycleTable();
 
+	// Determine results and display them
 	if (currentInput.length == 0) {
 		document.getElementById("results").innerHTML = "Add capsules above to see possibilities for the next capsule.";
 		return;
@@ -121,34 +135,74 @@ function updateAfterInput() {
 	
 	foundIndices = findIndicesOfInput();
 
-	symbolCounts = {};
+	var soonestCapsules = [];
+	var symbolCounts = {};
 	for (var capsule of CAPSULES) {
 		symbolCounts[capsule.symbol] = 0;
 	}
 
 	for (var foundIndex of foundIndices) {
-		nextIndex = foundIndex + currentInput.length;
-		if (nextIndex >= CYCLE.length) {
-			nextIndex -= CYCLE.length;
-		}
+		nextIndex = (foundIndex + currentInput.length) % CYCLE.length;
+		lastIndex = (foundIndex + currentInput.length - 1) % CYCLE.length;
 		
 		document.getElementById(nextIndex).classList.add("possible-end");
 		symbolCounts[CYCLE[nextIndex]]++;
+		
+		// Find the minimum number of capsules after lastIndex before you open each type of capsule
+		var capsuleDistance = {};
+		var capsulesFound = 0;
+		var searchIndex = nextIndex;
+		while (capsulesFound < CAPSULES.length &&
+			(searchIndex % CYCLE.length != nextIndex || searchIndex == nextIndex)) {
+			
+			if (!(CYCLE[searchIndex % CYCLE.length] in capsuleDistance)) {
+				capsuleDistance[CYCLE[searchIndex % CYCLE.length]] = (searchIndex - lastIndex + CYCLE.length) % CYCLE.length;
+				capsulesFound++;
+			}
+			searchIndex++;
+		}
+		
+		soonestCapsules.push(capsuleDistance);
 	}
-
 	
 	var results_html = "Total possibilities: " + foundIndices.length + "<br />";
-	for (var capsule of CAPSULES) {
-		var count = symbolCounts[capsule.symbol];
-		if (count > 0) {
+	if (foundIndices.length > 0) {
+		// Calculate table cell values
+		var tableElements = {};
+		for (var capsule of CAPSULES) {
+			var tableElement = {};
+			var count = symbolCounts[capsule.symbol];
 			var percent = Math.round(100 * count / foundIndices.length);
-			results_html += "<img src='" + capsule.name + ".png' />: " + count + " (" + percent + "%)<br />";
+			var distances = soonestCapsules.map(distsPerSymbol => distsPerSymbol[capsule.symbol])
+			var min = Math.min(...distances);
+			var max = Math.max(...distances);
+			tableElement['range_text'] = (min == max) ? min : min + "-" + max;
+			tableElement.count_text = (count == 0) ? "&nbsp;" : count + " (" + percent + "%)";
+			tableElement.image_html = "<span class='capsule " + capsule.name + "'>&nbsp;</span>";
+			tableElements[capsule.symbol] = tableElement;
 		}
+
+		// Construct the table
+		results_html += "<table id='resultsTable'><tr><th>&nbsp;</th>";
+		for (var capsule of CAPSULES) {
+			results_html += "<td>" + tableElements[capsule.symbol].image_html + "</td>";
+		}
+		results_html += "</tr><tr><th>Next</th>";
+		for (var capsule of CAPSULES) {
+			results_html += "<td>" + tableElements[capsule.symbol].count_text + "</td>";
+		}
+		results_html += "</tr><tr><th># Until</th>";
+		for (var capsule of CAPSULES) {
+			results_html += "<td>" + tableElements[capsule.symbol].range_text + "</td>";
+		}
+		results_html += "</tr></table>";
 	}
-	document.getElementById("results").innerHTML = results_html || "&nbsp";
+	document.getElementById("results").innerHTML = results_html;
 }
 
 function findIndicesOfInput() {
+	var currentInput = localStorage.getItem('currentInput');
+
 	var result = [];
 
 	var index = TWO_CYCLES.indexOf(currentInput);
