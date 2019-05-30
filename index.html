@@ -8,10 +8,21 @@ h3 {
 	margin: 5px;
 }
 
+p {
+	margin: 5px;
+}
+
 .section {
 	border-style: solid;
 	margin-bottom: 5px;
 	width: 550px;
+}
+
+.label { /* taken from scripter17's adcomm-capsule-finder */
+	color: white;
+	text-shadow:1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black, -1px -1px 0px black;
+	text-align:right;
+	line-height:calc(300%);
 }
 
 .capsule {
@@ -37,6 +48,12 @@ h3 {
 .Supreme {
 	background-image: url("Supreme.png");
 }
+.Wild1 {
+	background-image: url("Wild1.png");
+}
+.Wild5 {
+	background-image: url("Wild5.png");
+}
 .remove {
 	background-image: url("remove-small.png");
 }
@@ -60,17 +77,19 @@ h3 {
 <p>
 <div class="section">
 	<h3>Capsule History:</h3>
-	<strong>Capsule List:</strong>
+	<p><strong>Capsule List:</strong></p>
 	<div id="currentCapsules">&nbsp;</div>
-	<strong>Add Capsule:</strong>
+	<p><strong>Add Capsule:</strong></p>
 	<div>
 		<a href="#" onclick="addCapsule('W');"><span class="capsule Wood">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('S');"><span class="capsule Stone">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('I');"><span class="capsule Iron">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('E');"><span class="capsule Epic">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('U');"><span class="capsule Supreme">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('1');"><span class="capsule Wild1">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('5');"><span class="capsule Wild5">&nbsp;</span></a>
 		<a href="#" onclick="removeCapsule();"><span class="capsule remove">&nbsp;</span></a>
-	</div>
+	</div>	
 </div>
 <div class="section">
 	<h3>Next Capsule:</h3>
@@ -84,8 +103,6 @@ h3 {
 <script type="text/javascript">
 const CYCLE = "SWWWWIWWWWSWWWSWWWWSWWWWSWWWWSWWWWSWWWWSWWWWWSWWWWSWWWWSWWWWWWSWWWSWWWIWWWSWWWSWWWSWWWSWWWSWWWSWWWSWWSWWWWSWWWWSWWWSWWWUWWWSWWWIWWWWSWWWWWSWWWSWWWSWWWWSWWWWSWWWSWWWSWWWWSWWWWSWWSWWWSWWWSWWWWWIWWWSWWWWSWWWWSWWWWSWWWWWWSWWWWSWWWWSWWWWSWWWWEWW";
 
-const TWO_CYCLES = CYCLE + CYCLE;
-
 const CAPSULES = [
 { name: "Wood", symbol: "W" },
 { name: "Stone", symbol: "S" },
@@ -94,7 +111,10 @@ const CAPSULES = [
 { name: "Supreme", symbol: "U" }
 ];
 
-var SYMBOL_TO_NAME = {};
+var SYMBOL_TO_NAME = {
+	0: 'Wild0',
+	5: 'Wild5'
+};
 for (var capsule of CAPSULES) {
 	SYMBOL_TO_NAME[capsule.symbol] = capsule.name;
 }
@@ -116,11 +136,30 @@ function removeCapsule() {
 
 function updateAfterInput() {
 	var currentInput = localStorage.getItem('currentInput');
+	
+	var foundIndices = findIndicesOfInput();
+	var nextIndices = new Set(foundIndices.map(x => x.nextIndex));
+	if (nextIndices.size == 1) {
+		console.log(foundIndices[0]);
+	}	
 
 	// Update the "capsule history" list
 	var table_html = "";
+	var label_text = "&nbsp;";
+	var path_index = 0;
+	var cur_label_index = (nextIndices.size != 1) ? -1 : foundIndices[0].path[0];
 	for (var symbol of currentInput) {
-		table_html += "<span class='capsule " + SYMBOL_TO_NAME[symbol] + "'>&nbsp;</span>";
+		if (nextIndices.size == 1) {
+			if (symbol != '5') { // 5 means special 1-5 wildcard
+				label_text = (cur_label_index + 1);
+				cur_label_index++;
+			} else {
+				label_text = "&nbsp;";
+				path_index++;
+				cur_label_index = foundIndices[0].path[path_index];
+			}
+		}
+		table_html += "<span class='label capsule " + SYMBOL_TO_NAME[symbol] + "'>" + label_text + "</span>";
 	}
 	document.getElementById("currentCapsules").innerHTML = table_html || "&nbsp;";
 
@@ -131,9 +170,7 @@ function updateAfterInput() {
 	if (currentInput.length == 0) {
 		document.getElementById("results").innerHTML = "Add capsules above to see possibilities for the next capsule.";
 		return;
-	}
-	
-	foundIndices = findIndicesOfInput();
+	}	
 
 	var soonestCapsules = [];
 	var symbolCounts = {};
@@ -141,10 +178,7 @@ function updateAfterInput() {
 		symbolCounts[capsule.symbol] = 0;
 	}
 
-	for (var foundIndex of foundIndices) {
-		nextIndex = (foundIndex + currentInput.length) % CYCLE.length;
-		lastIndex = (foundIndex + currentInput.length - 1) % CYCLE.length;
-		
+	for (var nextIndex of nextIndices) {
 		document.getElementById(nextIndex).classList.add("possible-end");
 		symbolCounts[CYCLE[nextIndex]]++;
 		
@@ -156,7 +190,8 @@ function updateAfterInput() {
 			(searchIndex % CYCLE.length != nextIndex || searchIndex == nextIndex)) {
 			
 			if (!(CYCLE[searchIndex % CYCLE.length] in capsuleDistance)) {
-				capsuleDistance[CYCLE[searchIndex % CYCLE.length]] = (searchIndex - lastIndex + CYCLE.length) % CYCLE.length;
+				capsuleDistance[CYCLE[searchIndex % CYCLE.length]] =
+					(searchIndex - nextIndex + CYCLE.length - 1) % CYCLE.length;
 				capsulesFound++;
 			}
 			searchIndex++;
@@ -165,8 +200,11 @@ function updateAfterInput() {
 		soonestCapsules.push(capsuleDistance);
 	}
 	
-	var results_html = "Total possibilities: " + foundIndices.length + "<br />";
-	if (foundIndices.length > 0) {
+	var results_html = "";
+	if (nextIndices.size == 0) {
+		results_html = "Invalid history. You can use the 'minus' button to remove the most recent capsule.";
+	} else {
+		results_html = "Total possibilities: " + nextIndices.size + "<br />";
 		// Calculate table cell values
 		var tableElements = {};
 		for (var capsule of CAPSULES) {
@@ -201,14 +239,37 @@ function updateAfterInput() {
 }
 
 function findIndicesOfInput() {
-	var currentInput = localStorage.getItem('currentInput');
+	return findIndicesOf(localStorage.getItem('currentInput'), 0, 0, CYCLE.length - 1);
+}
 
-	var result = [];
-
-	var index = TWO_CYCLES.indexOf(currentInput);
-	while (index != -1 && index < CYCLE.length) {
-		result.push(index);
-		index = TWO_CYCLES.indexOf(currentInput, index + 1);
+function findIndicesOf(currentInput, currentInputStart, currentCycleStart, currentCycleEnd) {	
+	var result = []
+	for (var startIndex = currentCycleStart; startIndex <= currentCycleEnd; startIndex++) {
+		var validStartIndex = true;
+		for (var inputIndex = currentInputStart; inputIndex < currentInput.length; inputIndex++) {
+			if (currentInput[inputIndex] == '5') {
+				// 1-5 wildcard, try each possibility
+				for (var wildDelta = 1; wildDelta < 6; wildDelta++) {
+					var nextIndex = (startIndex + inputIndex + wildDelta - currentInputStart) % CYCLE.length;
+					var nextResults = findIndicesOf(currentInput, inputIndex + 1, nextIndex, nextIndex);
+					result = result.concat(nextResults.map(x => ({...x, startIndex: startIndex, path: [startIndex, ...x.path]})));
+				}
+				validStartIndex = false;
+				break;
+			} else if (currentInput[inputIndex] != '1' && currentInput[inputIndex] != CYCLE[(startIndex + inputIndex - currentInputStart) % CYCLE.length]) {
+				validStartIndex = false;
+				break;
+			}
+		}
+		
+		if (validStartIndex) {
+			result.push({
+				startIndex: startIndex,
+				lastIndex: (startIndex + currentInput.length - currentInputStart - 1) % CYCLE.length,
+				nextIndex: (startIndex + currentInput.length - currentInputStart) % CYCLE.length,
+				path: [startIndex]
+			});
+		}
 	}
 
 	return result;
@@ -221,7 +282,7 @@ function drawCycleTable() {
 	for (var row = 0; row < 24; row++) {
 		table_html += "<div>";
 		for (var col = 0; col < 10; col++) {
-			table_html += "<span id='" + index + "' class='capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>&nbsp;</span>";
+			table_html += "<span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>" + (index + 1) + "</span>";
 			index++;
 		}
 		table_html += "</div>";
