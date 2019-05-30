@@ -61,6 +61,9 @@ p {
 .remove {
 	background-image: url("remove-small.png");
 }
+.export {
+	background-image: url("export.png");
+}
 
 .possible-end {
 	background-color: #a7f45a;
@@ -74,6 +77,14 @@ p {
 }
 #resultsTable td {
 	padding: 5px;
+}
+#dividingBar {
+	border-left: 4px solid;
+	display: inline-block;
+	height: 40px;
+	width: 0px;
+	margin: 0px 10px 0px 10px;
+	
 }
 </style>
 </head>
@@ -92,8 +103,11 @@ p {
 		<a href="#" onclick="addCapsule('U');"><span class="capsule Supreme">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('1');"><span class="capsule Wild1">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('5');"><span class="capsule Wild5">&nbsp;</span></a>
+		<span id="dividingBar">&nbsp;</span>
+		<a href="#" onclick="exportToggle();"><span class="capsule export">&nbsp;</span></a>
 		<a href="#" onclick="removeCapsule();"><span class="capsule remove">&nbsp;</span></a>
-	</div>	
+	</div>
+	<p id='exportBlock' style='display:none;'><strong>Export URL:</strong> <input id='exportUrl' type='text' size='40'></input><p>
 </div>
 <div class="section">
 	<h3>Next Capsule:</h3>
@@ -121,6 +135,24 @@ var SYMBOL_TO_NAME = {
 };
 for (var capsule of CAPSULES) {
 	SYMBOL_TO_NAME[capsule.symbol] = capsule.name;
+}
+
+var splitUrl = window.location.href.split('?');
+if (splitUrl.length == 2) {
+	localStorage.setItem('currentInput', '');
+	localStorage.setItem('startOverride', -1);
+	
+	var arguments = splitUrl[1].split('&');
+	for (var arg of arguments) {
+		var keyValue = arg.split('=');
+		if (keyValue.length != 2) continue;
+		if (keyValue[0] == 'start') {
+			localStorage.setItem('startOverride', parseInt(keyValue[1]) - 1);
+		} else if (keyValue[0] == 'input') {
+			localStorage.setItem('currentInput', keyValue[1]);
+		}
+	}
+	window.location.href = splitUrl[0];
 }
 
 if (localStorage.getItem('currentInput') == null) {
@@ -179,6 +211,17 @@ function updateAfterInput() {
 		table_html += "<span class='label capsule " + SYMBOL_TO_NAME[symbol] + "'>" + label_text + "</span>";
 	}
 	document.getElementById("currentCapsules").innerHTML = table_html || "&nbsp;";
+	
+	var exportUrl = "https://zephyron1237.github.io/adcom-capsule-tracker/?";
+	if (nextIndices.size == 1) {
+		 exportUrl += "start=" + (foundIndices[0].lastIndex + 1);
+	} else {
+		if (startOverride != -1) {
+			exportUrl += "start=" + (startOverride + 1) + "&";
+		}
+		exportUrl += "input=" + currentInput;
+	}
+	document.getElementById("exportUrl").value = exportUrl;
 
 	// Update the Cycle table
 	drawCycleTable();
@@ -341,6 +384,15 @@ function setStartOverride(startOverride) {
 			localStorage.setItem('startOverride', startOverride);
 			updateAfterInput();
 		}		
+	}
+}
+
+function exportToggle() {
+	var exportBlock = document.getElementById('exportBlock');
+	if (exportBlock.style.display != 'block') {
+		exportBlock.style.display = 'block'
+	} else {
+		exportBlock.style.display = 'none'
 	}
 }
 </script>
