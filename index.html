@@ -112,7 +112,7 @@ const CAPSULES = [
 ];
 
 var SYMBOL_TO_NAME = {
-	0: 'Wild0',
+	1: 'Wild1',
 	5: 'Wild5'
 };
 for (var capsule of CAPSULES) {
@@ -139,9 +139,6 @@ function updateAfterInput() {
 	
 	var foundIndices = findIndicesOfInput();
 	var nextIndices = new Set(foundIndices.map(x => x.nextIndex));
-	if (nextIndices.size == 1) {
-		console.log(foundIndices[0]);
-	}	
 
 	// Update the "capsule history" list
 	var table_html = "";
@@ -152,7 +149,7 @@ function updateAfterInput() {
 		if (nextIndices.size == 1) {
 			if (symbol != '5') { // 5 means special 1-5 wildcard
 				label_text = (cur_label_index + 1);
-				cur_label_index++;
+				cur_label_index = (cur_label_index + 1) % CYCLE.length;
 			} else {
 				label_text = "&nbsp;";
 				path_index++;
@@ -191,7 +188,7 @@ function updateAfterInput() {
 			
 			if (!(CYCLE[searchIndex % CYCLE.length] in capsuleDistance)) {
 				capsuleDistance[CYCLE[searchIndex % CYCLE.length]] =
-					(searchIndex - nextIndex + CYCLE.length - 1) % CYCLE.length;
+					(searchIndex - nextIndex + CYCLE.length + 1) % CYCLE.length || CYCLE.length;
 				capsulesFound++;
 			}
 			searchIndex++;
@@ -204,7 +201,9 @@ function updateAfterInput() {
 	if (nextIndices.size == 0) {
 		results_html = "Invalid history. You can use the 'minus' button to remove the most recent capsule.";
 	} else {
-		results_html = "Total possibilities: " + nextIndices.size + "<br />";
+		if (nextIndices.size > 1) {
+			results_html = "Total possibilities: " + nextIndices.size + "<br />";
+		}
 		// Calculate table cell values
 		var tableElements = {};
 		for (var capsule of CAPSULES) {
@@ -214,9 +213,17 @@ function updateAfterInput() {
 			var distances = soonestCapsules.map(distsPerSymbol => distsPerSymbol[capsule.symbol])
 			var min = Math.min(...distances);
 			var max = Math.max(...distances);
-			tableElement['range_text'] = (min == max) ? min : min + "-" + max;
+			var label = "&nbsp;";
+			var capsuleClass = capsule.name;
+			if (nextIndices.size == 1) {
+				if (count > 0) {
+					capsuleClass += " possible-end";
+				}
+				label = ((foundIndices[0].nextIndex + min - 1) % CYCLE.length) + 1;
+			}
+			tableElement.range_text = (min == max) ? min : min + "-" + max;
 			tableElement.count_text = (count == 0) ? "&nbsp;" : count + " (" + percent + "%)";
-			tableElement.image_html = "<span class='capsule " + capsule.name + "'>&nbsp;</span>";
+			tableElement.image_html = "<span class='label capsule " + capsuleClass + "'>" + label + "</span>";
 			tableElements[capsule.symbol] = tableElement;
 		}
 
@@ -225,10 +232,14 @@ function updateAfterInput() {
 		for (var capsule of CAPSULES) {
 			results_html += "<td>" + tableElements[capsule.symbol].image_html + "</td>";
 		}
-		results_html += "</tr><tr><th>Next</th>";
-		for (var capsule of CAPSULES) {
-			results_html += "<td>" + tableElements[capsule.symbol].count_text + "</td>";
+		
+		if (nextIndices.size > 1) {
+			results_html += "</tr><tr><th>Next</th>";
+			for (var capsule of CAPSULES) {
+				results_html += "<td>" + tableElements[capsule.symbol].count_text + "</td>";
+			}
 		}
+		
 		results_html += "</tr><tr><th># Until</th>";
 		for (var capsule of CAPSULES) {
 			results_html += "<td>" + tableElements[capsule.symbol].range_text + "</td>";
