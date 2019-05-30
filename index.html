@@ -25,6 +25,10 @@ p {
 	line-height:calc(300%);
 }
 
+.startOverride {
+	color: lightblue;
+}
+
 .capsule {
 	width: 40px;
 	height: 35px;
@@ -122,6 +126,9 @@ for (var capsule of CAPSULES) {
 if (localStorage.getItem('currentInput') == null) {
 	localStorage.setItem('currentInput', '');
 }
+if (localStorage.getItem('startOverride') == null) {
+	localStorage.setItem('startOverride', -1);
+}
 updateAfterInput();
 
 function addCapsule(symbol) {
@@ -130,12 +137,18 @@ function addCapsule(symbol) {
 }
 
 function removeCapsule() {
-	localStorage.setItem('currentInput', localStorage.getItem('currentInput').slice(0, -1));
+	var currentInput = localStorage.getItem('currentInput');
+	if (currentInput == '') {
+		localStorage.setItem('startOverride', -1);
+	} else {
+		localStorage.setItem('currentInput', currentInput.slice(0, -1));
+	}
 	updateAfterInput();
 }
 
 function updateAfterInput() {
 	var currentInput = localStorage.getItem('currentInput');
+	var startOverride = parseInt(localStorage.getItem('startOverride'));
 	
 	var foundIndices = findIndicesOfInput();
 	var nextIndices = new Set(foundIndices.map(x => x.nextIndex));
@@ -145,6 +158,13 @@ function updateAfterInput() {
 	var label_text = "&nbsp;";
 	var path_index = 0;
 	var cur_label_index = (nextIndices.size != 1) ? -1 : foundIndices[0].path[0];
+	
+	if (startOverride != -1) {		
+		var symbol_class = SYMBOL_TO_NAME[CYCLE[startOverride]];
+		var override_label = startOverride + 1;
+		table_html += "<a href='#' onclick='setStartOverride(-1)'><span class='startOverride label capsule " + symbol_class + "'>" + override_label + "</span></a>";
+	}
+	
 	for (var symbol of currentInput) {
 		if (nextIndices.size == 1) {
 			if (symbol != '5') { // 5 means special 1-5 wildcard
@@ -164,8 +184,8 @@ function updateAfterInput() {
 	drawCycleTable();
 
 	// Determine results and display them
-	if (currentInput.length == 0) {
-		document.getElementById("results").innerHTML = "Add capsules above to see possibilities for the next capsule.";
+	if (currentInput.length == 0 && startOverride == -1) {
+		document.getElementById("results").innerHTML = "<ul><li>Add capsules above to see possibilities for the next capsule.</li><li>You can also choose a capsule below to start your history.</li></ul>";
 		return;
 	}	
 
@@ -250,7 +270,13 @@ function updateAfterInput() {
 }
 
 function findIndicesOfInput() {
-	return findIndicesOf(localStorage.getItem('currentInput'), 0, 0, CYCLE.length - 1);
+	var startOverride = parseInt(localStorage.getItem('startOverride'));
+	if (startOverride == -1) {
+		return findIndicesOf(localStorage.getItem('currentInput'), 0, 0, CYCLE.length - 1);
+	} else {
+		var nextIndex = (startOverride + 1) % CYCLE.length;
+		return findIndicesOf(localStorage.getItem('currentInput'), 0, nextIndex, nextIndex);
+	}
 }
 
 function findIndicesOf(currentInput, currentInputStart, currentCycleStart, currentCycleEnd) {	
@@ -293,13 +319,29 @@ function drawCycleTable() {
 	for (var row = 0; row < 24; row++) {
 		table_html += "<div>";
 		for (var col = 0; col < 10; col++) {
-			table_html += "<span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>" + (index + 1) + "</span>";
+			table_html += "<a href='#' onclick='setStartOverride(" + index + ")'><span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>" + (index + 1) + "</span></a>";
 			index++;
 		}
 		table_html += "</div>";
 	}
 
 	document.getElementById("table").innerHTML = table_html;
+}
+
+function setStartOverride(startOverride) {
+	// TODO: Notify user that this is an (in)valid selection. Maybe a BG color animation?
+	var currentInput = localStorage.getItem('currentInput');
+	if (startOverride == -1 || currentInput == "") {
+		localStorage.setItem('startOverride', startOverride);
+		updateAfterInput();
+	} else {
+		var indexAfterStart = (startOverride + 1) % CYCLE.length;
+		var foundIndices = findIndicesOf(currentInput, 0, indexAfterStart, indexAfterStart);
+		if (foundIndices.length > 0) {
+			localStorage.setItem('startOverride', startOverride);
+			updateAfterInput();
+		}		
+	}
 }
 </script>
 </html>
