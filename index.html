@@ -26,7 +26,11 @@ p {
 }
 
 .startOverride {
+	background-color: teal;
 	color: lightblue;
+}
+.path {
+	background-color: lightblue;
 }
 
 .capsule {
@@ -217,17 +221,19 @@ function updateAfterInput() {
 	}
 	
 	for (var symbol of currentInput) {
+		var inputClass = SYMBOL_TO_NAME[symbol];
 		if (nextIndices.size == 1) {
+			inputClass += " path";
 			if (symbol != '5') { // 5 means special 1-5 wildcard
 				label_text = (cur_label_index + 1);
-				cur_label_index = (cur_label_index + 1) % CYCLE.length;
+				cur_label_index = (cur_label_index + 1) % CYCLE.length;				
 			} else {
 				label_text = "&nbsp;";
 				path_index++;
 				cur_label_index = foundIndices[0].path[path_index];
-			}
+			}			
 		}
-		table_html += "<span class='label capsule " + SYMBOL_TO_NAME[symbol] + "'>" + label_text + "</span>";
+		table_html += "<span class='label capsule " + inputClass + "'>" + label_text + "</span>";
 	}
 	document.getElementById("currentCapsules").innerHTML = table_html || "&nbsp;";
 	
@@ -244,6 +250,17 @@ function updateAfterInput() {
 
 	// Update the Cycle table
 	drawCycleTable();
+	
+	// Highlight Cycle table
+	if (startOverride != -1) {
+		document.getElementById(startOverride).classList.add('startOverride');
+	}
+	if (nextIndices.size == 1) {
+		for (var index = foundIndices[0].startIndex; index != foundIndices[0].nextIndex; index = (index + 1) % CYCLE.length) {
+			if (index == startOverride) continue;
+			document.getElementById(index).classList.add('path');
+		}		
+	}
 
 	// Determine results and display them
 	if (currentInput.length == 0 && startOverride == -1) {
