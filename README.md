@@ -4,11 +4,13 @@ This is a simple tool to assist players of the mobile game Adventure Communist. 
 
 ## How to use
 
+Hosted at: <https://zephyron1237.github.io/adcom-capsule-tracker/>
+
 Click on capsules in the "Add Capsule" section to add them to your history, or the "minus" symbol to remove the last one.  The "Next Capsule" section will automatically update with chances for the next capsule's type, and the "Cycle" section will visually highlight each possibility.  Eventually, you should be able to figure out exactly where you are and reliably predict the future.
 
 ## Thanks
 
-The cycle data and the images are taken from the [Fandom Wiki](https://adventurecommunist.fandom.com/wiki/Free_capsules).
+The cycle data and the images are taken from the [Fandom Wiki](https://adventurecommunist.fandom.com/wiki/Free_capsules).  Some code and inspiration taken from [Scripter17's Capsule Finder](https://github.com/scripter17/adcomm-capsule-finder/).
 
 ## Contributing
 

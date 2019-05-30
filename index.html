@@ -104,7 +104,7 @@ p {
 		<a href="#" onclick="addCapsule('1');"><span class="capsule Wild1">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('5');"><span class="capsule Wild5">&nbsp;</span></a>
 		<span id="dividingBar">&nbsp;</span>
-		<a href="#" onclick="exportToggle();"><span class="capsule export">&nbsp;</span></a>
+		<a href="#" onclick="toggleBlock('exportBlock');"><span class="capsule export">&nbsp;</span></a>
 		<a href="#" onclick="removeCapsule();"><span class="capsule remove">&nbsp;</span></a>
 	</div>
 	<p id='exportBlock' style='display:none;'><strong>Export URL:</strong> <input id='exportUrl' type='text' size='40'></input><p>
@@ -116,6 +116,25 @@ p {
 <div class="section">
 	<h3>Cycle</h3>
 	<div id="table"></div>
+</div>
+<p>Made by Zephyron1237. Source on <a href='https://github.com/zephyron1237/adcom-capsule-tracker'>GitHub</a>. Version 3 (<a href='#' onclick="toggleBlock('changelist')">Changelist</a>)</p>
+<div id="changelist" style="display:none">
+<ul>
+<li><strong>Version 3</strong>
+	<ul>
+	<li>Added wildcards for 1 capsule and 1-5 capsules.</li>
+	<li>Added optional starting capsule override.</li>
+	<li>Added export/import.</li>
+	<li>UI Improvements</li>
+	</ul>
+</li>
+<li><strong>Version 2</strong>
+	<ul>
+	<li>Added automatic saving of progress.</li>
+	<li>Added ranges for expected distances to each capsule type.</li>
+	</ul>
+</li>
+</ul>
 </div>
 </body>
 <script type="text/javascript">
@@ -387,8 +406,8 @@ function setStartOverride(startOverride) {
 	}
 }
 
-function exportToggle() {
-	var exportBlock = document.getElementById('exportBlock');
+function toggleBlock(blockId) {
+	var exportBlock = document.getElementById(blockId);
 	if (exportBlock.style.display != 'block') {
 		exportBlock.style.display = 'block'
 	} else {
