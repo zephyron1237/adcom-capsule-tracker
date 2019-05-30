@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" type="image/png" href="Wood.png">
+<link rel="shortcut icon" type="image/png" href="Plastic.png">
 <title>Crusade Event Free Capsules</title>
 <style type="text/css">
 h3 {
@@ -41,20 +41,11 @@ p {
 	background-position: center;
 	display: inline-block;
 }
-.Wood {
-	background-image: url("Wood.png");
+.Plastic {
+	background-image: url("Plastic.png");
 }
-.Stone {
-	background-image: url("Stone.png");
-}
-.Iron {
-	background-image: url("Iron.png");
-}
-.Epic {
-	background-image: url("Epic.png");
-}
-.Supreme {
-	background-image: url("Supreme.png");
+.Armored {
+	background-image: url("Armored.png");
 }
 .Wild1 {
 	background-image: url("Wild1.png");
@@ -100,11 +91,8 @@ p {
 	<div id="currentCapsules">&nbsp;</div>
 	<p><strong>Add Capsule:</strong></p>
 	<div>
-		<a href="#" onclick="addCapsule('W');"><span class="capsule Wood">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('S');"><span class="capsule Stone">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('I');"><span class="capsule Iron">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('E');"><span class="capsule Epic">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('U');"><span class="capsule Supreme">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('P');"><span class="capsule Plastic">&nbsp;</span></a>
+		<a href="#" onclick="addCapsule('A');"><span class="capsule Armored">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('1');"><span class="capsule Wild1">&nbsp;</span></a>
 		<a href="#" onclick="addCapsule('5');"><span class="capsule Wild5">&nbsp;</span></a>
 		<span id="dividingBar">&nbsp;</span>
@@ -121,7 +109,7 @@ p {
 	<h3>Cycle</h3>
 	<div id="table"></div>
 </div>
-<p><a href='https://zephyron1237.github.io/adcom-capsule-tracker/crusade.html'>[Crusade Event Tracker]</a></p>
+<p><a href='https://zephyron1237.github.io/adcom-capsule-tracker/'>[Main Game Tracker]</a></p>
 <p>Made by Zephyron1237. Source on <a href='https://github.com/zephyron1237/adcom-capsule-tracker'>GitHub</a>. Version 3 (<a href='#' onclick="toggleBlock('changelist')">Changelist</a>)</p>
 <div id="changelist" style="display:none">
 <ul>
@@ -143,14 +131,14 @@ p {
 </div>
 </body>
 <script type="text/javascript">
-const CYCLE = "SWWWWIWWWWSWWWSWWWWSWWWWSWWWWSWWWWSWWWWSWWWWWSWWWWSWWWWSWWWWWWSWWWSWWWIWWWSWWWSWWWSWWWSWWWSWWWSWWWSWWSWWWWSWWWWSWWWSWWWUWWWSWWWIWWWWSWWWWWSWWWSWWWSWWWWSWWWWSWWWSWWWSWWWWSWWWWSWWSWWWSWWWSWWWWWIWWWSWWWWSWWWWSWWWWSWWWWWWSWWWWSWWWWSWWWWSWWWWEWW";
+// Taken from the event's Balance.json on May 30, 2019
+const GAME_DATA_JSON = ["plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic"]
+
+const CYCLE = GAME_DATA_JSON.map(name => name[0].toUpperCase()).join('');
 
 const CAPSULES = [
-{ name: "Wood", symbol: "W" },
-{ name: "Stone", symbol: "S" },
-{ name: "Iron", symbol: "I" },
-{ name: "Epic", symbol: "E" },
-{ name: "Supreme", symbol: "U" }
+{ name: "Plastic", symbol: "P" },
+{ name: "Armored", symbol: "A" },
 ];
 
 var SYMBOL_TO_NAME = {
@@ -163,48 +151,48 @@ for (var capsule of CAPSULES) {
 
 var splitUrl = window.location.href.split('?');
 if (splitUrl.length == 2) {
-	localStorage.setItem('currentInput', '');
-	localStorage.setItem('startOverride', -1);
+	localStorage.setItem('currentInputCrusade', '');
+	localStorage.setItem('startOverrideCrusade', -1);
 	
 	var arguments = splitUrl[1].split('&');
 	for (var arg of arguments) {
 		var keyValue = arg.split('=');
 		if (keyValue.length != 2) continue;
 		if (keyValue[0] == 'start') {
-			localStorage.setItem('startOverride', parseInt(keyValue[1]) - 1);
+			localStorage.setItem('startOverrideCrusade', parseInt(keyValue[1]) - 1);
 		} else if (keyValue[0] == 'input') {
-			localStorage.setItem('currentInput', keyValue[1]);
+			localStorage.setItem('currentInputCrusade', keyValue[1]);
 		}
 	}
 	window.location.href = splitUrl[0];
 }
 
-if (localStorage.getItem('currentInput') == null) {
-	localStorage.setItem('currentInput', '');
+if (localStorage.getItem('currentInputCrusade') == null) {
+	localStorage.setItem('currentInputCrusade', '');
 }
-if (localStorage.getItem('startOverride') == null) {
-	localStorage.setItem('startOverride', -1);
+if (localStorage.getItem('startOverrideCrusade') == null) {
+	localStorage.setItem('startOverrideCrusade', -1);
 }
 updateAfterInput();
 
 function addCapsule(symbol) {
-	localStorage.setItem('currentInput', localStorage.getItem('currentInput') + symbol);
+	localStorage.setItem('currentInputCrusade', localStorage.getItem('currentInputCrusade') + symbol);
 	updateAfterInput();
 }
 
 function removeCapsule() {
-	var currentInput = localStorage.getItem('currentInput');
+	var currentInput = localStorage.getItem('currentInputCrusade');
 	if (currentInput == '') {
-		localStorage.setItem('startOverride', -1);
+		localStorage.setItem('startOverrideCrusade', -1);
 	} else {
-		localStorage.setItem('currentInput', currentInput.slice(0, -1));
+		localStorage.setItem('currentInputCrusade', currentInput.slice(0, -1));
 	}
 	updateAfterInput();
 }
 
 function updateAfterInput() {
-	var currentInput = localStorage.getItem('currentInput');
-	var startOverride = parseInt(localStorage.getItem('startOverride'));
+	var currentInput = localStorage.getItem('currentInputCrusade');
+	var startOverride = parseInt(localStorage.getItem('startOverrideCrusade'));
 	
 	var foundIndices = findIndicesOfInput();
 	var nextIndices = new Set(foundIndices.map(x => x.nextIndex));
@@ -238,7 +226,7 @@ function updateAfterInput() {
 	}
 	document.getElementById("currentCapsules").innerHTML = table_html || "&nbsp;";
 	
-	var exportUrl = "https://zephyron1237.github.io/adcom-capsule-tracker/?";
+	var exportUrl = "https://zephyron1237.github.io/adcom-capsule-tracker/crusade.html?";
 	if (nextIndices.size == 1) {
 		 exportUrl += "start=" + (foundIndices[0].lastIndex + 1);
 	} else {
@@ -350,12 +338,12 @@ function updateAfterInput() {
 }
 
 function findIndicesOfInput() {
-	var startOverride = parseInt(localStorage.getItem('startOverride'));
+	var startOverride = parseInt(localStorage.getItem('startOverrideCrusade'));
 	if (startOverride == -1) {
-		return findIndicesOf(localStorage.getItem('currentInput'), 0, 0, CYCLE.length - 1);
+		return findIndicesOf(localStorage.getItem('currentInputCrusade'), 0, 0, CYCLE.length - 1);
 	} else {
 		var nextIndex = (startOverride + 1) % CYCLE.length;
-		return findIndicesOf(localStorage.getItem('currentInput'), 0, nextIndex, nextIndex);
+		return findIndicesOf(localStorage.getItem('currentInputCrusade'), 0, nextIndex, nextIndex);
 	}
 }
 
@@ -396,9 +384,9 @@ function drawCycleTable() {
 	var table_html = "";
 	var index = 0;
 
-	for (var row = 0; row < 24; row++) {
+	for (var row = 0; row < 3; row++) {
 		table_html += "<div>";
-		for (var col = 0; col < 10; col++) {
+		for (var col = 0; col < 8; col++) {
 			table_html += "<a href='#' onclick='setStartOverride(" + index + ")'><span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>" + (index + 1) + "</span></a>";
 			index++;
 		}
@@ -410,15 +398,15 @@ function drawCycleTable() {
 
 function setStartOverride(startOverride) {
 	// TODO: Notify user that this is an (in)valid selection. Maybe a BG color animation?
-	var currentInput = localStorage.getItem('currentInput');
+	var currentInput = localStorage.getItem('currentInputCrusade');
 	if (startOverride == -1 || currentInput == "") {
-		localStorage.setItem('startOverride', startOverride);
+		localStorage.setItem('startOverrideCrusade', startOverride);
 		updateAfterInput();
 	} else {
 		var indexAfterStart = (startOverride + 1) % CYCLE.length;
 		var foundIndices = findIndicesOf(currentInput, 0, indexAfterStart, indexAfterStart);
 		if (foundIndices.length > 0) {
-			localStorage.setItem('startOverride', startOverride);
+			localStorage.setItem('startOverrideCrusade', startOverride);
 			updateAfterInput();
 		}		
 	}
