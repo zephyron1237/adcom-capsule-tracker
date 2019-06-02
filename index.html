@@ -2,7 +2,9 @@
 <html>
 <head>
 <link rel="shortcut icon" type="image/png" href="Wood.png">
-<title>Crusade Event Free Capsules</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adventure Communist Free Capsules</title>
 <style type="text/css">
 h3 {
 	margin: 5px;
@@ -10,12 +12,6 @@ h3 {
 
 p {
 	margin: 5px;
-}
-
-.section {
-	border-style: solid;
-	margin-bottom: 5px;
-	width: 550px;
 }
 
 .label { /* taken from scripter17's adcomm-capsule-finder */
@@ -26,11 +22,11 @@ p {
 }
 
 .startOverride {
-	background-color: teal;
+	background-color: #007bff; /* bootstrap primary */
 	color: lightblue;
 }
 .path {
-	background-color: lightblue;
+	background-color: #17a2b8; /* bootstrap info */
 }
 
 .capsule {
@@ -41,6 +37,14 @@ p {
 	background-position: center;
 	display: inline-block;
 }
+.capsule-no-margin {
+	width: 40px;
+	height: 35px;
+	background-repeat: no-repeat;
+	background-position: center;
+	display: inline-block;
+}
+
 .Wood {
 	background-image: url("Wood.png");
 }
@@ -70,11 +74,11 @@ p {
 }
 
 .possible-end {
-	background-color: #a7f45a;
+	background-color: #28a745; /* bootstrap success */
 }
 
 #currentCapsules {
-	min-height: 45px;
+	min-height: 90px;
 }
 #resultsTable {
 	text-align:center;
@@ -84,44 +88,81 @@ p {
 }
 #dividingBar {
 	border-left: 4px solid;
-	display: inline-block;
-	height: 40px;
+	display: inline-block;	
 	width: 0px;
 	margin: 0px 10px 0px 10px;
 	
 }
+
+@media screen and (max-width: 799px) {
+	/* History and Cycle cols: 10, next vertical */
+	#historyCard { width:550px; }
+	#nextCard { width:400px; display: block; position: static; }
+	#cycleCard { width: 550px; }	
+}
+@media screen and (min-width:800px) and (max-width: 1049px) {
+	/* History and Cycle cols: 15, next vertical */ 
+	#historyCard { width: 800px; }
+	#nextCard { width:400px; display: block; position: static; }
+	#cycleCard { width: 800px; }	
+}
+@media screen and (min-width:1050px) and (max-width: 1239px) {
+	/* History cols: 10, Cycle cols: 20, next horiz */
+	#historyCard { width: 550px; }
+	#nextCard { width:400px; display: inline-block; position: absolute; top:0px; }
+	#cycleCard { width: 1050px; }
+}
+@media screen and (min-width:1240px) {
+	/* History cols: 15, Cycle cols: 20, next horiz */
+	#historyCard { width: 800px; }
+	#nextCard { width:400px; display: inline-block; position: absolute; top:0px; }
+	#cycleCard { width: 1050px; }
+}
 </style>
 </head>
 <body>
-<p>
-<div class="section">
-	<h3>Capsule History:</h3>
-	<p><strong>Capsule List:</strong></p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<a class="navbar-brand" href="#">Free Capsule Tracker</a>
+	<ul class="navbar-nav">
+		<li class="nav-item active" id="mainButton"><a class="nav-link" href="#" onclick="switchMode('main')">Main</a></li>
+		<li class="nav-item" id="eventButton"><a class="nav-link" href="#" onclick="switchMode('event')">Event</a></li>
+	</ul>
+</nav>
+<div style="position:relative">
+<span class="card mx-2 mt-1" style="display:inline-block;" id="historyCard">
+	<h4 class="card-header">Capsule History:</h4>
+	<div class="card-body">
 	<div id="currentCapsules">&nbsp;</div>
-	<p><strong>Add Capsule:</strong></p>
-	<div>
-		<a href="#" onclick="addCapsule('W');"><span class="capsule Wood">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('S');"><span class="capsule Stone">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('I');"><span class="capsule Iron">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('E');"><span class="capsule Epic">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('U');"><span class="capsule Supreme">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('1');"><span class="capsule Wild1">&nbsp;</span></a>
-		<a href="#" onclick="addCapsule('5');"><span class="capsule Wild5">&nbsp;</span></a>
+	<p class="card-text"><strong>Add Capsule:</strong></p>
+	<div class="btn-toolbar" role="toolbar">
+		<div class="btn-group mb-1" role="group">
+			<button type="button" class="btn btn-outline-secondary" onclick="addCapsule('W');"><span class="capsule-no-margin Wood">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="addCapsule('S');"><span class="capsule-no-margin Stone">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="addCapsule('I');"><span class="capsule-no-margin Iron">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="addCapsule('E');"><span class="capsule-no-margin Epic">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="addCapsule('U');"><span class="capsule-no-margin Supreme">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="addCapsule('1');"><span class="capsule-no-margin Wild1">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="addCapsule('5');"><span class="capsule-no-margin Wild5">&nbsp;</span></button>
+		</div>
 		<span id="dividingBar">&nbsp;</span>
-		<a href="#" onclick="toggleBlock('exportBlock');"><span class="capsule export">&nbsp;</span></a>
-		<a href="#" onclick="removeCapsule();"><span class="capsule remove">&nbsp;</span></a>
+		<div class="btn-group mb-1" role="group">
+			<button type="button" class="btn btn-outline-secondary" onclick="toggleBlock('exportBlock');"><span class="capsule export">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="removeCapsule();"><span class="capsule remove">&nbsp;</span></button>
+		</div>
 	</div>
-	<p id='exportBlock' style='display:none;'><strong>Export URL:</strong> <input id='exportUrl' type='text' size='40'></input><p>
+	<p id='exportBlock' style='display:none;'><strong>Export URL:</strong> <input id='exportUrl' type='text' size='40' readonly></input><p>
+	</div> <!--cardbody-->
+</span>
+<span class="card mx-2 mt-1" id="nextCard">
+	<h4 class="card-header">Next Capsule:</h4>
+	<div class="card-body" id="results">&nbsp;</div>
+</span>
 </div>
-<div class="section">
-	<h3>Next Capsule:</h3>
-	<p id="results">&nbsp;</p>
+<div class="card mx-2 mt-1" id="cycleCard">
+	<h4 class="card-header">Cycle</h4>
+	<div class="card-body" id="table"></div>
 </div>
-<div class="section">
-	<h3>Cycle</h3>
-	<div id="table"></div>
-</div>
-<p><a href='https://zephyron1237.github.io/adcom-capsule-tracker/crusade.html'>[Crusade Event Tracker]</a></p>
+<footer>
 <p>Made by Zephyron1237. Source on <a href='https://github.com/zephyron1237/adcom-capsule-tracker'>GitHub</a>. Version 3 (<a href='#' onclick="toggleBlock('changelist')">Changelist</a>)</p>
 <div id="changelist" style="display:none">
 <ul>
@@ -141,6 +182,7 @@ p {
 </li>
 </ul>
 </div>
+</footer>
 </body>
 <script type="text/javascript">
 const CYCLE = "SWWWWIWWWWSWWWSWWWWSWWWWSWWWWSWWWWSWWWWSWWWWWSWWWWSWWWWSWWWWWWSWWWSWWWIWWWSWWWSWWWSWWWSWWWSWWWSWWWSWWSWWWWSWWWWSWWWSWWWUWWWSWWWIWWWWSWWWWWSWWWSWWWSWWWWSWWWWSWWWSWWWSWWWWSWWWWSWWSWWWSWWWSWWWWWIWWWSWWWWSWWWWSWWWWSWWWWWWSWWWWSWWWWSWWWWSWWWWEWW";
@@ -340,7 +382,7 @@ function updateAfterInput() {
 			}
 		}
 		
-		results_html += "</tr><tr><th># Until</th>";
+		results_html += "</tr><tr><th>Until</th>";
 		for (var capsule of CAPSULES) {
 			results_html += "<td>" + tableElements[capsule.symbol].range_text + "</td>";
 		}
@@ -394,15 +436,9 @@ function findIndicesOf(currentInput, currentInputStart, currentCycleStart, curre
 
 function drawCycleTable() {
 	var table_html = "";
-	var index = 0;
 
-	for (var row = 0; row < 24; row++) {
-		table_html += "<div>";
-		for (var col = 0; col < 10; col++) {
-			table_html += "<a href='#' onclick='setStartOverride(" + index + ")'><span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>" + (index + 1) + "</span></a>";
-			index++;
-		}
-		table_html += "</div>";
+	for (var index in CYCLE) {
+		table_html += "<a href='#' onclick='setStartOverride(" + index + ")'><span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[CYCLE[index]] + "'>" + (parseInt(index) + 1) + "</span></a>";
 	}
 
 	document.getElementById("table").innerHTML = table_html;
