@@ -1,0 +1,121 @@
+h3 {
+	margin: 5px;
+}
+
+p {
+	margin: 5px;
+}
+
+.label { /* taken from scripter17's adcomm-capsule-finder */
+	color: white;
+	text-shadow:1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black, -1px -1px 0px black;
+	text-align:right;
+	line-height:calc(300%);
+}
+
+.startOverride {
+	background-color: #007bff; /* bootstrap primary */
+	color: lightblue;
+}
+.path {
+	background-color: #17a2b8; /* bootstrap info */
+}
+
+.capsule {
+	width: 40px;
+	height: 35px;
+	margin: 5px 5px;
+	background-repeat: no-repeat;
+	background-position: center;
+	display: inline-block;
+}
+.capsule-no-margin {
+	width: 40px;
+	height: 35px;
+	background-repeat: no-repeat;
+	background-position: center;
+	display: inline-block;
+}
+
+.Wood {
+	background-image: url("img/Wood.png");
+}
+.Stone {
+	background-image: url("img/Stone.png");
+}
+.Iron {
+	background-image: url("img/Iron.png");
+}
+.Epic {
+	background-image: url("img/Epic.png");
+}
+.Supreme {
+	background-image: url("img/Supreme.png");
+}
+.Plastic {
+	background-image: url("img/Plastic.png");
+}
+.Armored {
+	background-image: url("img/Armored.png");
+}
+.Wild1 {
+	background-image: url("img/Wild1.png");
+}
+.Wild5 {
+	background-image: url("img/Wild5.png");
+}
+.remove {
+	background-image: url("img/remove-small.png");
+}
+.export {
+	background-image: url("img/Export.png");
+}
+
+.possible-end {
+	background-color: #28a745; /* bootstrap success */
+}
+
+#currentCapsules {
+	min-height: 90px;
+}
+#resultsTable {
+	text-align:center;
+}
+#resultsTable td {
+	padding: 5px;
+}
+#event-toolbar {
+	display: none;
+}
+#dividingBar {
+	border-left: 4px solid;
+	display: inline-block;	
+	width: 0px;
+	margin: 0px 10px 0px 10px;
+	
+}
+
+@media screen and (max-width: 799px) {
+	/* History and Cycle cols: 10, next vertical */
+	#historyCard { width:550px; }
+	#nextCard { width:400px; display: block; position: static; }
+	#cycleCard { width: 550px; }	
+}
+@media screen and (min-width:800px) and (max-width: 1049px) {
+	/* History and Cycle cols: 15, next vertical */ 
+	#historyCard { width: 800px; }
+	#nextCard { width:400px; display: block; position: static; }
+	#cycleCard { width: 800px; }	
+}
+@media screen and (min-width:1050px) and (max-width: 1239px) {
+	/* History cols: 10, Cycle cols: 20, next horiz */
+	#historyCard { width: 550px; }
+	#nextCard { width:400px; display: inline-block; position: absolute; top:0px; }
+	#cycleCard { width: 1050px; }
+}
+@media screen and (min-width:1240px) {
+	/* History cols: 15, Cycle cols: 20, next horiz */
+	#historyCard { width: 800px; }
+	#nextCard { width:400px; display: inline-block; position: absolute; top:0px; }
+	#cycleCard { width: 1050px; }
+}
