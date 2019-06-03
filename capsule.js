@@ -431,3 +431,27 @@ function switchMode(mode, shouldUpdate = true) {
 		}
 	}
 }
+
+function importScripter17() {
+	var importUrl = prompt("Paste save URL from Scripter17's tool:");
+	if (importUrl) {
+		var urlHashSplit = importUrl.split('#');
+		if (urlHashSplit.length != 2) {
+			alert("Invalid Scripter17 Save Url");
+			return;
+		}
+		
+		var hashAmperSplit = urlHashSplit[1].split('&');
+		var mode = (hashAmperSplit.length != 2) ? 'main' : hashAmperSplit[1];
+		if (!(mode in CYCLES)) {
+			alert("Invalid mode: " + mode);
+			return;
+		}
+		var input = hashAmperSplit[0].replace(/x/g, '1');
+		
+		switchMode(mode, false);
+		setStartOverride(-1);
+		setCurrentInput(input);
+		updateAfterInput();
+	}
+}
