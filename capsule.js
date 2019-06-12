@@ -200,7 +200,7 @@ function updateAfterInput() {
 	var resultsElement = document.getElementById("results");
 	var results_html = "";
 	if (nextIndices.size == 0) {
-		results_html = "<strong>Invalid history</strong>. You can use the <strong>'minus' button</strong> to remove the most recent capsule.";
+		results_html = "<strong>Invalid history</strong>. You can use the <strong>'minus' button</strong> to remove the most recent capsule, or reset from the 'settings' menu.";
 		resultsElement.classList.add('bg-warning');
 	} else {
 		resultsElement.classList.remove('bg-warning');
@@ -322,11 +322,11 @@ function switchStartOverride(startOverride) {
 }
 
 function toggleBlock(blockId) {
-	var exportBlock = document.getElementById(blockId);
-	if (exportBlock.style.display != 'block') {
-		exportBlock.style.display = 'block'
+	var elem = document.getElementById(blockId);
+	if (elem.style.display != 'block') {
+		elem.style.display = 'block'
 	} else {
-		exportBlock.style.display = 'none'
+		elem.style.display = 'none'
 	}
 }
 
@@ -435,6 +435,8 @@ function switchMode(mode, shouldUpdate = true) {
 		document.getElementById('main-toolbar').style.display = (mode == 'main') ? 'inline-flex' : 'none';
 		document.getElementById('event-toolbar').style.display = (mode == 'event') ? 'inline-flex' : 'none';
 		
+		document.getElementById('resetButton').innerHTML = "Reset " + mode + " data";
+		
 		if (shouldUpdate) {
 			updateAfterInput();
 		}
@@ -461,6 +463,14 @@ function importScripter17() {
 		switchMode(mode, false);
 		setStartOverride(-1);
 		setCurrentInput(input);
+		updateAfterInput();
+	}
+}
+
+function resetCurrentMode() {
+	if (confirm("Are you sure you want to reset your tracking data for " + mode + "?")) {
+		setStartOverride(-1);
+		setCurrentInput('');
 		updateAfterInput();
 	}
 }

@@ -68,7 +68,7 @@ p {
 	background-image: url("img/remove-small.png");
 }
 .export {
-	background-image: url("img/Export.png");
+	background-image: url("img/Settings.png");
 }
 
 .possible-end {
@@ -88,8 +88,7 @@ p {
 	display: none;
 }
 #dividingBar {
-	border-left: 4px solid;
-	display: inline-block;	
+	display: inline-block;
 	width: 0px;
 	margin: 0px 10px 0px 10px;
 	

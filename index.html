@@ -39,12 +39,13 @@
 		</div>
 		<span id="dividingBar">&nbsp;</span>
 		<div class="btn-group mb-1" role="group">
-			<button type="button" class="btn btn-outline-secondary" onclick="toggleBlock('exportBlock');"><span class="capsule export">&nbsp;</span></button>
+			<button type="button" class="btn btn-outline-secondary" onclick="toggleBlock('settingsBlock');"><span class="capsule export">&nbsp;</span></button>
 			<button type="button" class="btn btn-outline-secondary" onclick="removeCapsule();"><span class="capsule remove">&nbsp;</span></button>
 		</div>
 	</div>
-	<div id='exportBlock' style='display:none;'>
+	<div id='settingsBlock' style='display:none;'>
 		<p><strong>Export URL:</strong> <input id='exportUrl' type='text' size='40' readonly></input></p>
+		<p><button class='btn btn-outline-primary' id="resetButton" onclick="resetCurrentMode()">Reset main data</button></p>
 		<p><button class='btn btn-outline-primary' onclick="importScripter17()">Import Scripter17 Save Url</button></p>
 	</div>
 	</div> <!--cardbody-->
@@ -59,9 +60,15 @@
 	<div class="card-body" id="table"></div>
 </div>
 <footer>
-<p>Made by Zephyron1237. Source on <a href='https://github.com/zephyron1237/adcom-capsule-tracker'>GitHub</a>. Version 4 (<a href='#' onclick="toggleBlock('changelist')">Changelist</a>)</p>
+<p>Made by Zephyron1237. Source on <a href='https://github.com/zephyron1237/adcom-capsule-tracker'>GitHub</a>. Version 5 (<a href='#' onclick="toggleBlock('changelist')">Changelist</a>)</p>
 <div id="changelist" style="display:none">
 <ul>
+<li><strong>Version 5</strong>
+	<ul>
+	<li>Added 'reset' and 'import Scripter17' buttons to settings.</li>
+	<li>Fixed event order and handling of URLs with ?s.</li>
+	</ul>
+</li>
 <li><strong>Version 4</strong>
 	<ul>
 	<li>Added event tracking to main tool. Switch with the buttons at the top.</li>
