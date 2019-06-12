@@ -42,15 +42,20 @@ function main() {
 	var splitUrl = window.location.href.split('?');
 	if (splitUrl.length == 2) {
 		var urlMode = 'main';
-		var urlInput = '';
-		var urlStart = -1;
+		var urlInput = null;
+		var urlStart = null;
 		
 		var arguments = splitUrl[1].split('&');
 		for (var arg of arguments) {
 			var keyValue = arg.split('=');
 			if (keyValue.length != 2) continue;
+			
 			if (keyValue[0] == 'start') {
-				urlStart = parseInt(keyValue[1]) - 1;
+				var tempStart = parseInt(keyValue[1]) - 1;
+				if (tempStart > -1) {
+					// ignore if urlStart is NaN or negative
+					urlStart = tempStart;
+				}
 			} else if (keyValue[0] == 'input') {
 				urlInput = keyValue[1];
 			} else if (keyValue[0] == 'mode') {
@@ -64,8 +69,12 @@ function main() {
 		switchMode(urlMode, false);
 		localStorage.setItem("tempStartupMode", urlMode);
 		
-		setCurrentInput(urlInput);
-		setStartOverride(urlStart);
+		if (urlInput != null || urlStart != null) {
+			// Only reset the state if we have enough info to do so
+			// You can still reset with a blank, non-null input
+			setCurrentInput(urlInput || "");
+			setStartOverride(urlStart || -1);
+		}
 		
 		window.location.href = splitUrl[0];
 	} else if (localStorage.getItem("tempStartupMode")) {
