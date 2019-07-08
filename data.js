@@ -1,5 +1,17 @@
 const MAIN_GAME_DATA = ["stone","wood","wood","wood","wood","iron","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","iron","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","supreme","wood","wood","wood","stone","wood","wood","wood","iron","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","wood","iron","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","epic","wood","wood"];
 
+// Inexplicably, even though the Balance.json is exactly above, the game actually has a stone in spot #240.
+const MAIN_DATA_REPLACEMENTS = { 
+  239: "stone"
+};
+
+for (let replacementIndex in MAIN_DATA_REPLACEMENTS) {
+  MAIN_GAME_DATA[replacementIndex] = MAIN_DATA_REPLACEMENTS[replacementIndex];
+}
+
+
+
 const BASE_EVENT_GAME_DATA = ["plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic","plastic","plastic","armored","plastic"];
 
+// The first capsule in an event is a scripted plastic.  So we just move the plastic at the end to the beginning to fix the loop.
 const EVENT_GAME_DATA = ["plastic", ...BASE_EVENT_GAME_DATA.slice(0, -1)]

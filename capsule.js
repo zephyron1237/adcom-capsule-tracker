@@ -117,7 +117,7 @@ function updateAfterInput() {
 	if (startOverride != -1) {		
 		var symbol_class = SYMBOL_TO_NAME[getCycle(startOverride)];
 		var override_label = startOverride + 1;
-		table_html += "<a href='#' onclick='setStartOverride(-1)'><span class='startOverride label capsule " + symbol_class + "'>" + override_label + "</span></a>";
+		table_html += "<a href='#' onclick='setStartOverride(-1)' title='Remove #" + override_label + " as Start'><span class='startOverride label capsule " + symbol_class + "'>" + override_label + "</span></a>";
 	}
 	
 	for (var symbol of currentInput) {
@@ -299,7 +299,7 @@ function drawCycleTable() {
 	var table_html = "";
 
 	for (var index in getCycle()) {
-		table_html += "<a href='#' onclick='switchStartOverride(" + index + ")'><span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[getCycle(index)] + "'>" + (parseInt(index) + 1) + "</span></a>";
+		table_html += "<a href='#' onclick='switchStartOverride(" + index + ")' title='Set #" + (parseInt(index) + 1) + " as Start'><span id='" + index + "' class='label capsule " + SYMBOL_TO_NAME[getCycle(index)] + "'>" + (parseInt(index) + 1) + "</span></a>";
 	}
 
 	document.getElementById("table").innerHTML = table_html;
@@ -332,6 +332,11 @@ function toggleBlock(blockId) {
 
 function initializeSaveData() {
 	migrateOldSaveData();
+	
+	if (localStorage.getItem('seen-240-warning') != "true") {
+		$('#alert-240-changed').removeClass('collapse');
+		localStorage.setItem('seen-240-warning', 'true');
+	}
 	
 	if (getLocal('main', 'currentInput') == null) {
 		setLocal('main', 'currentInput', '');
