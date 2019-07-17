@@ -333,8 +333,12 @@ function toggleBlock(blockId) {
 function initializeSaveData() {
 	migrateOldSaveData();
 	
-	if (localStorage.getItem('seen-240-warning') != "true") {
-		$('#alert-240-changed').removeClass('collapse');
+	// Only show the 240 warning to users with saves before it changed, and only once.
+	if (getLocal('main', 'currentInput') != null) {
+		if (localStorage.getItem('seen-240-warning') != "true") {
+			$('#alert-240-changed').removeClass('collapse');
+		}
+		
 		localStorage.setItem('seen-240-warning', 'true');
 	}
 	
