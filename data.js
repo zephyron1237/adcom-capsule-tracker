@@ -1,8 +1,8 @@
 const MAIN_GAME_DATA = ["stone","wood","wood","wood","wood","iron","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","iron","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","supreme","wood","wood","wood","stone","wood","wood","wood","iron","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","stone","wood","wood","wood","wood","wood","iron","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","stone","wood","wood","wood","wood","epic","wood","wood"];
 
-// Inexplicably, even though the Balance.json is exactly above, the game actually has a stone in spot #240.
+// Inexplicably, even though the Balance.json is exactly above, the game actually has an extra stone in spot #241.
 const MAIN_DATA_REPLACEMENTS = { 
-  239: "stone"
+  240: "stone"
 };
 
 for (let replacementIndex in MAIN_DATA_REPLACEMENTS) {
