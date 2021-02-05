@@ -28,4 +28,4 @@ const EVENT_GAME_DATA = ["plastic", ...BASE_EVENT_GAME_DATA.slice(0, -1)]
 
 
 // So that AdCom can have "CurrentMode" and Ages can have "Ages-CurrentMode"
-var GAME_SAVE_KEY_PREFIX = "";
+var GAME_SAVE_KEY_PREFIX = "Ages";

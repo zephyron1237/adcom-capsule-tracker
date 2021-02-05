@@ -380,11 +380,11 @@ function migrateOldSaveData() {
 }
 
 function setLocal(mode, key, value) {
-	localStorage.setItem(mode + "-" + key, value);
+	localStorage.setItem(GAME_SAVE_KEY_PREFIX + mode + "-" + key, value);
 }
 
 function getLocal(mode, key) {
-	return localStorage.getItem(mode + "-" + key);
+	return localStorage.getItem(GAME_SAVE_KEY_PREFIX + mode + "-" + key);
 }
 
 function getCurrentInput() {
