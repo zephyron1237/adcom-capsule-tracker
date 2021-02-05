@@ -77,6 +77,11 @@ p {
 	background-color: #28a745; /* bootstrap success */
 }
 
+.scheduleIcon {
+  max-width: 1.5em;
+  max-height: 1.5em;
+}
+
 #currentCapsules {
 	min-height: 90px;
 }
