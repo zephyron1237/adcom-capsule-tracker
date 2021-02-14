@@ -137,8 +137,7 @@ function updateAfterInput() {
 	}
 	document.getElementById("currentCapsules").innerHTML = table_html || "&nbsp;";
 	
-	var exportUrl = "https://zephyron1237.github.io/adcom-capsule-tracker/?";
-	exportUrl += 'mode=' + currentMode + '&';
+	var exportUrl = document.location.href + '?mode=' + currentMode + '&';
 	if (nextIndices.size == 1) {
 		 exportUrl += "start=" + (foundIndices[0].lastIndex + 1);
 	} else {
